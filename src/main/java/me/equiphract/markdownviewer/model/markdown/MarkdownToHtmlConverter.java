@@ -4,7 +4,7 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 
-public class MarkdownToHtmlConverter implements MarkdownConverter {
+public final class MarkdownToHtmlConverter implements MarkdownConverter {
   private final Parser parser;
   private final HtmlRenderer renderer;
 
