@@ -1,13 +1,15 @@
 package me.equiphract.markdownviewer;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.Parent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
+import java.io.IOException;
+import java.net.URL;
 
-public class MarkdownViewerApplication extends Application {
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public final class MarkdownViewerApplication extends Application {
 
   public static void main(String[] args) {
     launch(args);
@@ -15,13 +17,19 @@ public class MarkdownViewerApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    final var scene = new Scene(createContent(), 300, 300);
+    final var scene = new Scene(buildInitialSceneContent(), 300, 600);
     primaryStage.setScene(scene);
     primaryStage.show();
   }
 
-  private Parent createContent() {
-    return new StackPane(new Text("Markdown-Viewer"));
+  private Parent buildInitialSceneContent() throws IOException {
+    var fxmlLoader = new FXMLLoader(getInitialFxmlLocationUrl());
+    return (Parent) fxmlLoader.load();
+  }
+
+  private URL getInitialFxmlLocationUrl() {
+    String initialFxmlLocation = "view/PageRenderView.fxml";
+    return getClass().getResource(initialFxmlLocation);
   }
 
 }

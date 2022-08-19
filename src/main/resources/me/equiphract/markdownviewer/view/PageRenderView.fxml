@@ -1,0 +1,10 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+
+<VBox fx:controller="me.equiphract.markdownviewer.view.MainView"
+  xmlns:fx="http:/javafx.com/fxml">
+
+  <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
+
+</VBox>
+
