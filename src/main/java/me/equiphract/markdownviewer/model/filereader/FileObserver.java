@@ -30,13 +30,20 @@ public final class FileObserver {
   private WatchKey currentlyRegisteredWatchKey;
   private ExecutorService singleThreadPool;
   private Path file;
+  private boolean isThreadPoolActive;
 
   public FileObserver()
       throws IOException {
     changeNotifier = new FileContentChangeNotifier();
     var fileSystem = FileSystems.getDefault();
     watchService = fileSystem.newWatchService();
-    singleThreadPool = Executors.newSingleThreadExecutor();
+    singleThreadPool = Executors.newSingleThreadExecutor(this::useDaemonThread);
+  }
+
+  private Thread useDaemonThread(Runnable runnable) {
+    Thread thread = Executors.defaultThreadFactory().newThread(runnable);
+    thread.setDaemon(true);
+    return thread;
   }
 
   public void observe(Path file)
@@ -45,7 +52,7 @@ public final class FileObserver {
     verifyThatFileExists();
     cancelPreviousWatchServiceRegistrationIfPresent();
     registerWatchService();
-    startNewWatchServiceThread();
+    startNewWatchServiceThreadIfNotAlreadyRunning();
   }
 
   private void verifyThatFileExists() throws FileNotFoundException {
@@ -66,8 +73,11 @@ public final class FileObserver {
       fileDirectory.register(watchService, ENTRY_MODIFY, ENTRY_DELETE);
   }
 
-  private void startNewWatchServiceThread() {
-    singleThreadPool.execute(() -> tryRunWatchService());
+  private void startNewWatchServiceThreadIfNotAlreadyRunning() {
+    if (!isThreadPoolActive) {
+      singleThreadPool.execute(() -> tryRunWatchService());
+      isThreadPoolActive = true;
+    }
   }
 
   private void tryRunWatchService() {
