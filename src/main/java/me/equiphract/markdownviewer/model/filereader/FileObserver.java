@@ -11,7 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -27,16 +28,15 @@ public final class FileObserver {
   private FileContentChangeNotifier changeNotifier;
   private WatchService watchService;
   private WatchKey currentlyRegisteredWatchKey;
-  private Thread currentlyRunningThread;
+  private ExecutorService singleThreadPool;
   private Path file;
-  private volatile AtomicBoolean shouldContinue;
 
   public FileObserver()
       throws IOException {
     changeNotifier = new FileContentChangeNotifier();
     var fileSystem = FileSystems.getDefault();
     watchService = fileSystem.newWatchService();
-    shouldContinue = new AtomicBoolean();
+    singleThreadPool = Executors.newSingleThreadExecutor();
   }
 
   public void observe(Path file)
@@ -67,25 +67,19 @@ public final class FileObserver {
   }
 
   private void startNewWatchServiceThread() {
-    stopOldThread();
-    startNewThread();
+    singleThreadPool.execute(() -> tryRunWatchService());
   }
 
-  private void stopOldThread() {
-    shouldContinue.set(false);
-  }
-
-  private void startNewThread() {
-    currentlyRunningThread = new Thread(() -> {
-      try {
-        runWatchService();
-      } catch (InterruptedException | IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    });
-    shouldContinue.set(true);
-    currentlyRunningThread.start();
+  private void tryRunWatchService() {
+    try {
+      runWatchService();
+    } catch (IOException e) {
+      changeNotifier.publish(
+          "There was an error while reading '%s'".formatted(file));
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   private void runWatchService() throws InterruptedException, IOException {
