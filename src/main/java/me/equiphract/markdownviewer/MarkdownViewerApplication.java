@@ -19,6 +19,7 @@ public final class MarkdownViewerApplication extends Application {
   public void start(Stage primaryStage) throws Exception {
     final var scene = new Scene(buildInitialSceneContent(), 300, 600);
     primaryStage.setScene(scene);
+    primaryStage.setTitle("Markdown-Viewer");
     primaryStage.show();
   }
 
