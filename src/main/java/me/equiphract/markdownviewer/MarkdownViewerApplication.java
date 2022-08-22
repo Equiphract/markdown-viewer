@@ -33,7 +33,7 @@ public final class MarkdownViewerApplication extends Application {
   }
 
   private URL getMainFxmlLocationUrl() {
-    String mainFxmlLocation = "view/PageRenderView.fxml";
+    String mainFxmlLocation = "view/MainView.fxml";
     return getClass().getResource(mainFxmlLocation);
   }
 
