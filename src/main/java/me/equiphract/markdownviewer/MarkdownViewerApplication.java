@@ -17,20 +17,24 @@ public final class MarkdownViewerApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
-    final var scene = new Scene(buildInitialSceneContent(), 300, 600);
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Markdown-Viewer");
+    configurePrimaryStage(primaryStage);
     primaryStage.show();
   }
 
-  private Parent buildInitialSceneContent() throws IOException {
-    var fxmlLoader = new FXMLLoader(getInitialFxmlLocationUrl());
-    return (Parent) fxmlLoader.load();
+  private void configurePrimaryStage(Stage primaryStage) throws IOException {
+    primaryStage.setScene(buildMainScene());
+    primaryStage.setTitle("Markdown-Viewer");
   }
 
-  private URL getInitialFxmlLocationUrl() {
-    String initialFxmlLocation = "view/PageRenderView.fxml";
-    return getClass().getResource(initialFxmlLocation);
+  private Scene buildMainScene() throws IOException {
+    var fxmlLoader = new FXMLLoader(getMainFxmlLocationUrl());
+    var sceneRootObject = (Parent) fxmlLoader.load();
+    return new Scene(sceneRootObject, 300, 600);
+  }
+
+  private URL getMainFxmlLocationUrl() {
+    String mainFxmlLocation = "view/PageRenderView.fxml";
+    return getClass().getResource(mainFxmlLocation);
   }
 
 }
