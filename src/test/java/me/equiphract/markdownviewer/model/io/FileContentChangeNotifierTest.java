@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.filereader;
+package me.equiphract.markdownviewer.model.io;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;

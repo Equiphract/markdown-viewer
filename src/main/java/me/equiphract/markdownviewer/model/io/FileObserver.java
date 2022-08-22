@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.filereader;
+package me.equiphract.markdownviewer.model.io;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;

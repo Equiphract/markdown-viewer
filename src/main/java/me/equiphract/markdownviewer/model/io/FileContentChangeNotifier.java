@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.filereader;
+package me.equiphract.markdownviewer.model.io;
 
 import java.util.HashMap;
 import java.util.Map;
