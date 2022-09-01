@@ -141,12 +141,11 @@ public final class FileObserver {
     changeNotifier.publish(Files.readString(file));
   }
 
-  public void subscribeToChangeNotifier(
-      Object subscriber, Consumer<String> callback) {
+  public void subscribe(Object subscriber, Consumer<String> callback) {
     changeNotifier.subscribe(subscriber, callback);
   }
 
-  public void unsubscribeFromChangeNotifier(Object subscriber) {
+  public void unsubscribe(Object subscriber) {
     changeNotifier.unsubscribe(subscriber);
   }
 

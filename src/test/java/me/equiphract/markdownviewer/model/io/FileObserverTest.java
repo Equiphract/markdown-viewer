@@ -82,12 +82,12 @@ class FileObserverTest {
     when(watchKey.pollEvents()).thenReturn(List.of());
 
     // This is horrible, I am sorry.
-    observer.subscribeToChangeNotifier(this, data -> {
+    observer.subscribe(this, data -> {
       assertEquals(INITIAL_DATA, data);
       when(watchKey.pollEvents()).thenReturn(List.of(watchEvent));
       // `this` refers to the lambda's enclosing context
-      observer.unsubscribeFromChangeNotifier(this);
-      observer.subscribeToChangeNotifier(this, this::assertUpdated);
+      observer.unsubscribe(this);
+      observer.subscribe(this, this::assertUpdated);
     });
 
     observer.observe(pathToFile);

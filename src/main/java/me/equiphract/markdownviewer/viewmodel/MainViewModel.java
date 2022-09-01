@@ -25,7 +25,7 @@ public final class MainViewModel {
     fileObserver = new FileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
 
-    fileObserver.subscribeToChangeNotifier(this, this::updatePageHtmlProperty);
+    fileObserver.subscribe(this, this::updatePageHtmlProperty);
     Path file = Path.of("/tmp/markdown.md");
     fileObserver.observe(file);
   }
