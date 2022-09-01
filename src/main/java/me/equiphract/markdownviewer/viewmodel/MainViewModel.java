@@ -1,7 +1,9 @@
 package me.equiphract.markdownviewer.viewmodel;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.WatchService;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,7 +21,8 @@ public final class MainViewModel {
 
   public MainViewModel() throws IOException, InterruptedException {
     pageHtml = new SimpleStringProperty("");
-    fileObserver = new FileObserver();
+    WatchService watchService = FileSystems.getDefault().newWatchService();
+    fileObserver = new FileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
 
     fileObserver.subscribeToChangeNotifier(this, this::updatePageHtmlProperty);

@@ -5,7 +5,6 @@ import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -32,11 +31,10 @@ public final class FileObserver {
   private Path file;
   private boolean isThreadPoolActive;
 
-  public FileObserver()
+  public FileObserver(WatchService watchService)
       throws IOException {
     changeNotifier = new FileContentChangeNotifier();
-    var fileSystem = FileSystems.getDefault();
-    watchService = fileSystem.newWatchService();
+    this.watchService = watchService;
     singleThreadPool = Executors.newSingleThreadExecutor(this::useDaemonThread);
   }
 
