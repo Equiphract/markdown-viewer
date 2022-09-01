@@ -33,6 +33,11 @@ public final class FileObserver {
 
   public FileObserver(WatchService watchService)
       throws IOException {
+
+    if (watchService == null) {
+      throw new IllegalArgumentException("WatchService must not be null.");
+    }
+
     changeNotifier = new FileContentChangeNotifier();
     this.watchService = watchService;
     singleThreadPool = Executors.newSingleThreadExecutor(this::useDaemonThread);
@@ -46,6 +51,11 @@ public final class FileObserver {
 
   public void observe(Path file)
       throws FileNotFoundException, IOException, InterruptedException {
+
+    if (file == null) {
+      throw new IllegalArgumentException("File path must not be null.");
+    }
+
     this.file = file;
     verifyThatFileExists();
     cancelPreviousWatchServiceRegistrationIfPresent();
