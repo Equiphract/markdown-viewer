@@ -1,8 +1,19 @@
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
 <VBox fx:controller="me.equiphract.markdownviewer.view.MainView"
   xmlns:fx="http:/javafx.com/fxml">
+
+  <MenuBar fx:id="menuBar">
+    <Menu text="File">
+      <MenuItem
+        fx:id="openMenuItem"
+        text="Open..."/>
+    </Menu>
+  </MenuBar>
 
   <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
 

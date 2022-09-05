@@ -38,5 +38,16 @@ class MainViewTest {
     verifyThat("#webView", isVisible());
   }
 
+  @Test
+  void menuBar_shouldExist() {
+    verifyThat("#menuBar", isVisible());
+  }
+
+  // @Test
+  // void open_shouldStartFileExplorer(FxRobot robot) {
+  //   robot.clickOn("#openMenuItem");
+  //   // TODO don't know how to test...
+  // }
+
 }
 
