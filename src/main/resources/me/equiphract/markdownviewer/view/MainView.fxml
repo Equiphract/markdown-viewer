@@ -11,7 +11,8 @@
     <Menu text="File">
       <MenuItem
         fx:id="openMenuItem"
-        text="Open..."/>
+        text="Open..."
+        onAction="#openFile"/>
     </Menu>
   </MenuBar>
 

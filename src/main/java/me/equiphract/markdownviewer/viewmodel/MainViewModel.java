@@ -1,7 +1,10 @@
 package me.equiphract.markdownviewer.viewmodel;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchService;
 
@@ -26,8 +29,6 @@ public final class MainViewModel {
     converter = new MarkdownToHtmlConverter();
 
     fileObserver.subscribe(this, this::updatePageHtmlProperty);
-    Path file = Path.of("/tmp/markdown.md");
-    fileObserver.observe(file);
   }
 
   private void updatePageHtmlProperty(String modifiedFileContent) {
@@ -48,6 +49,16 @@ public final class MainViewModel {
     return (observable, oldValue, newValue) -> {
       Platform.runLater(() -> listener.changed(observable, oldValue, newValue));
     };
+  }
+
+  public void loadFile(File file)
+      throws FileNotFoundException, IOException, InterruptedException {
+
+    if (file != null) {
+      var filePath = file.toPath();
+      fileObserver.observe(filePath);
+      updatePageHtmlProperty(Files.readString(filePath));
+    }
   }
 
 }
