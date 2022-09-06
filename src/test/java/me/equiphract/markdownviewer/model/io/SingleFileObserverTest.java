@@ -20,7 +20,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class FileObserverTest {
+class SingleFileObserverTest {
 
   private static final String INITIAL_DATA = "Initial Data";
   private static final String UPDATED_DATA = "Updated Data";
@@ -51,7 +51,7 @@ class FileObserverTest {
     when(filesystemProvider.newInputStream(pathToFile))
       .thenReturn(initialInputStream, updatedInputStream);
 
-    observer = new FileObserver(watchService);
+    observer = new SingleFileObserver(watchService);
   }
 
   private InputStream createNewInputStream(String data) {
@@ -59,10 +59,11 @@ class FileObserverTest {
   }
 
   @Test
-  void FileObserver_givenNull_throwsIllegalArgumentException()
+  void SingleFileObserver_givenNull_throwsIllegalArgumentException()
       throws IOException {
 
-    assertThrows(IllegalArgumentException.class, () -> new FileObserver(null));
+    assertThrows(IllegalArgumentException.class,
+        () -> new SingleFileObserver(null));
   }
 
   @Test

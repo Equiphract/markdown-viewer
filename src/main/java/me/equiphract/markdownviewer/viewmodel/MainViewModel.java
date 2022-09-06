@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import me.equiphract.markdownviewer.model.io.FileObserver;
+import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
 
@@ -25,7 +26,7 @@ public final class MainViewModel {
   public MainViewModel() throws IOException, InterruptedException {
     pageHtml = new SimpleStringProperty("");
     WatchService watchService = FileSystems.getDefault().newWatchService();
-    fileObserver = new FileObserver(watchService);
+    fileObserver = new SingleFileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
 
     fileObserver.subscribe(this, this::updatePageHtmlProperty);
