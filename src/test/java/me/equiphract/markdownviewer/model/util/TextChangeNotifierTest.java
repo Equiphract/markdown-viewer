@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.io;
+package me.equiphract.markdownviewer.model.util;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -10,9 +10,9 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 
-class FileContentChangeNotifierTest {
+class TextChangeNotifierTest {
 
-  FileContentChangeNotifier listener = new FileContentChangeNotifier();
+  TextChangeNotifier changeNotifier = new TextChangeNotifier();
 
   @Test
   @SuppressWarnings("unchecked")
@@ -20,8 +20,8 @@ class FileContentChangeNotifierTest {
     Object subscriber = new Object();
     Consumer<String> consumer = mock(Consumer.class);
 
-    listener.subscribe(subscriber, consumer);
-    listener.publish("");
+    changeNotifier.subscribe(subscriber, consumer);
+    changeNotifier.publish("");
 
     verify(consumer, only()).accept("");
   }
@@ -30,13 +30,13 @@ class FileContentChangeNotifierTest {
   @SuppressWarnings("unchecked")
   void subscribe_givenNullSubscriber_throwsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class,
-                 () -> listener.subscribe(null, mock(Consumer.class)));
+                 () -> changeNotifier.subscribe(null, mock(Consumer.class)));
   }
 
   @Test
   void subscribe_givenNullCallback_throwsIllegalArgumentException() {
     assertThrows(IllegalArgumentException.class,
-                 () -> listener.subscribe(new Object(), null));
+                 () -> changeNotifier.subscribe(new Object(), null));
   }
 
   @Test
@@ -45,13 +45,13 @@ class FileContentChangeNotifierTest {
     Object subscriber = new Object();
     Consumer<String> consumer = mock(Consumer.class);
 
-    listener.subscribe(subscriber, consumer);
-    listener.publish("1");
+    changeNotifier.subscribe(subscriber, consumer);
+    changeNotifier.publish("1");
 
     verify(consumer, only()).accept("1");
 
-    listener.unsubscribe(subscriber);
-    listener.publish("2");
+    changeNotifier.unsubscribe(subscriber);
+    changeNotifier.publish("2");
 
     verify(consumer, never()).accept("2");
   }

@@ -1,10 +1,10 @@
-package me.equiphract.markdownviewer.model.io;
+package me.equiphract.markdownviewer.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public final class FileContentChangeNotifier {
+public final class TextChangeNotifier implements ChangeNotifier<String> {
 
   private Map<Object, Consumer<String>> subscribers = new HashMap<>();
 
@@ -16,12 +16,12 @@ public final class FileContentChangeNotifier {
     subscribers.put(subscriber, callback);
   }
 
-  public void publish(String changedFileContent) {
-    subscribers.values().forEach(s -> s.accept(changedFileContent));
-  }
-
   public void unsubscribe(Object subscriber) {
     subscribers.remove(subscriber);
+  }
+
+  public void publish(String changedFileContent) {
+    subscribers.values().forEach(s -> s.accept(changedFileContent));
   }
 
 }

@@ -14,17 +14,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import me.equiphract.markdownviewer.model.util.ChangeNotifier;
+import me.equiphract.markdownviewer.model.util.TextChangeNotifier;
+
 /**
  * FileObserver instances observe a single file in the filesystem and notify via
- * a {@link FileContentChangeNotifier} if any changes to the file's content
- * occur or if the file gets deleted.
- *
- * TODO I have yet to find a simple way to unit test this class that does not
- * involve working with the actual file system...
+ * a {@link ChangeNotifier} if any changes to the file's content occur or if the
+ * file gets deleted.
  */
 public final class FileObserver {
 
-  private FileContentChangeNotifier changeNotifier;
+  private ChangeNotifier<String> changeNotifier;
   private WatchService watchService;
   private WatchKey currentlyRegisteredWatchKey;
   private ExecutorService singleThreadPool;
@@ -38,7 +38,7 @@ public final class FileObserver {
       throw new IllegalArgumentException("WatchService must not be null.");
     }
 
-    changeNotifier = new FileContentChangeNotifier();
+    changeNotifier = new TextChangeNotifier();
     this.watchService = watchService;
     singleThreadPool = Executors.newSingleThreadExecutor(this::useDaemonThread);
   }
