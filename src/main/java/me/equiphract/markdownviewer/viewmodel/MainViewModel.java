@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.WatchService;
 
 import javafx.application.Platform;
@@ -19,29 +18,29 @@ import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
 
 public final class MainViewModel {
 
-  private StringProperty pageHtml;
+  private StringProperty html;
   private FileObserver fileObserver;
   private MarkdownConverter converter;
 
   public MainViewModel() throws IOException, InterruptedException {
-    pageHtml = new SimpleStringProperty("");
+    html = new SimpleStringProperty("");
     WatchService watchService = FileSystems.getDefault().newWatchService();
     fileObserver = new SingleFileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
 
-    fileObserver.subscribe(this, this::updatePageHtmlProperty);
+    fileObserver.subscribe(this, this::updateHtml);
   }
 
-  private void updatePageHtmlProperty(String modifiedFileContent) {
+  private void updateHtml(String modifiedFileContent) {
     String convertedFileContent = converter.convert(modifiedFileContent);
-    pageHtml.set(convertedFileContent);
+    html.set(convertedFileContent);
   }
 
-  public void addAsyncPageHtmlPropertyListener(
+  public void addAsyncHtmlPropertyListener(
       ChangeListener<? super String> listener) {
 
     wrapListenerInRunLater(listener);
-    pageHtml.addListener(wrapListenerInRunLater(listener));
+    html.addListener(wrapListenerInRunLater(listener));
   }
 
   private ChangeListener<? super String> wrapListenerInRunLater(
@@ -58,7 +57,7 @@ public final class MainViewModel {
     if (file != null) {
       var filePath = file.toPath();
       fileObserver.observe(filePath);
-      updatePageHtmlProperty(Files.readString(filePath));
+      updateHtml(Files.readString(filePath));
     }
   }
 

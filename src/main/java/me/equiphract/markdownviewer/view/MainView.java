@@ -30,7 +30,7 @@ public final class MainView {
   }
 
   private void addHtmlPropertyListener() {
-    mainViewModel.addAsyncPageHtmlPropertyListener(this::reloadHtmlOnChange);
+    mainViewModel.addAsyncHtmlPropertyListener(this::reloadHtmlOnChange);
   }
 
   private void reloadHtmlOnChange(
