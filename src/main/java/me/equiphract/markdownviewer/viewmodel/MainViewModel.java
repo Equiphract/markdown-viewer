@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.WatchService;
 
 import javafx.application.Platform;
@@ -18,8 +19,21 @@ import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
 
 public final class MainViewModel {
 
+  private static final String HTML_SKELETON = """
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <base href="file://%s/">
+      </head>
+      <body>
+        %s
+      </body>
+    </html>
+    """;
+
   private StringProperty html;
   private FileObserver fileObserver;
+  private Path currentlyObservedFilePath;
   private MarkdownConverter converter;
 
   public MainViewModel() throws IOException, InterruptedException {
@@ -33,7 +47,13 @@ public final class MainViewModel {
 
   private void updateHtml(String modifiedFileContent) {
     String convertedFileContent = converter.convert(modifiedFileContent);
-    html.set(convertedFileContent);
+    String constructedHtml = constructHtml(convertedFileContent);
+    html.set(constructedHtml);
+  }
+
+  private String constructHtml(String convertedFileContent) {
+    return HTML_SKELETON
+      .formatted(currentlyObservedFilePath.getParent(), convertedFileContent);
   }
 
   public void addAsyncHtmlPropertyListener(
@@ -57,6 +77,7 @@ public final class MainViewModel {
     if (file != null) {
       var filePath = file.toPath();
       fileObserver.observe(filePath);
+      currentlyObservedFilePath = filePath;
       updateHtml(Files.readString(filePath));
     }
   }
