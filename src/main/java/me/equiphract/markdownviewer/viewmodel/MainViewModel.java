@@ -16,31 +16,22 @@ import me.equiphract.markdownviewer.model.io.FileObserver;
 import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
+import me.equiphract.markdownviewer.model.util.HtmlBuilder;
 
 public final class MainViewModel {
-
-  private static final String HTML_SKELETON = """
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <base href="file://%s/">
-      </head>
-      <body>
-        %s
-      </body>
-    </html>
-    """;
 
   private StringProperty html;
   private FileObserver fileObserver;
   private Path currentlyObservedFilePath;
   private MarkdownConverter converter;
+  private HtmlBuilder htmlBuilder;
 
   public MainViewModel() throws IOException, InterruptedException {
     html = new SimpleStringProperty("");
     WatchService watchService = FileSystems.getDefault().newWatchService();
     fileObserver = new SingleFileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
+    htmlBuilder = new HtmlBuilder();
 
     fileObserver.subscribe(this, this::updateHtml);
   }
@@ -52,8 +43,8 @@ public final class MainViewModel {
   }
 
   private String constructHtml(String convertedFileContent) {
-    return HTML_SKELETON
-      .formatted(currentlyObservedFilePath.getParent(), convertedFileContent);
+    String parentPath = currentlyObservedFilePath.getParent().toString();
+    return htmlBuilder.buildHtml(parentPath, convertedFileContent);
   }
 
   public void addAsyncHtmlPropertyListener(
