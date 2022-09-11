@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.util;
+package me.equiphract.markdownviewer.model.htmlbuilder;
 
 public final class SimpleHtmlBuilder implements HtmlBuilder {
 

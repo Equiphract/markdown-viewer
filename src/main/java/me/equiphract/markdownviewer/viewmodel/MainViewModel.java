@@ -16,8 +16,8 @@ import me.equiphract.markdownviewer.model.io.FileObserver;
 import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
-import me.equiphract.markdownviewer.model.util.HtmlBuilder;
-import me.equiphract.markdownviewer.model.util.SimpleHtmlBuilder;
+import me.equiphract.markdownviewer.model.htmlbuilder.HtmlBuilder;
+import me.equiphract.markdownviewer.model.htmlbuilder.SimpleHtmlBuilder;
 
 public final class MainViewModel {
 

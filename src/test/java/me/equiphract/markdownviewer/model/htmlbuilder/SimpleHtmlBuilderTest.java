@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.util;
+package me.equiphract.markdownviewer.model.htmlbuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
