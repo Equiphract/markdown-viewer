@@ -16,6 +16,7 @@ import me.equiphract.markdownviewer.model.io.FileObserver;
 import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
+import me.equiphract.markdownviewer.model.util.HtmlBuilder;
 import me.equiphract.markdownviewer.model.util.SimpleHtmlBuilder;
 
 public final class MainViewModel {
@@ -24,7 +25,7 @@ public final class MainViewModel {
   private FileObserver fileObserver;
   private Path currentlyObservedFilePath;
   private MarkdownConverter converter;
-  private SimpleHtmlBuilder htmlBuilder;
+  private HtmlBuilder htmlBuilder;
 
   public MainViewModel() throws IOException, InterruptedException {
     html = new SimpleStringProperty("");

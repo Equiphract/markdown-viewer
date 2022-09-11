@@ -1,6 +1,6 @@
 package me.equiphract.markdownviewer.model.util;
 
-public final class SimpleHtmlBuilder {
+public final class SimpleHtmlBuilder implements HtmlBuilder {
 
   private static final String HTML_SKELETON = """
     <!DOCTYPE html>
@@ -14,6 +14,7 @@ public final class SimpleHtmlBuilder {
     </html>
     """;
 
+  @Override
   public String buildHtml(String baseUrl, String bodyContent) {
     throwIfArgumentsContainNull(baseUrl, bodyContent);
 
