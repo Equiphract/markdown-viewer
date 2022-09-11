@@ -8,9 +8,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 
-class HtmlBuilderTest {
+class SimpleHtmlBuilderTest {
 
-  private HtmlBuilder htmlBuilder = new HtmlBuilder();
+  private SimpleHtmlBuilder htmlBuilder = new SimpleHtmlBuilder();
 
   @Test
   void buildHtml_givenBasePathWithEndingSlash_returnsHtmlWithBaseUrlWithEndingSlash() {

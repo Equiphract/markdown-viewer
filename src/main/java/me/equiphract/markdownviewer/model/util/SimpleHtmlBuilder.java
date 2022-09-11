@@ -1,6 +1,6 @@
 package me.equiphract.markdownviewer.model.util;
 
-public final class HtmlBuilder {
+public final class SimpleHtmlBuilder {
 
   private static final String HTML_SKELETON = """
     <!DOCTYPE html>
