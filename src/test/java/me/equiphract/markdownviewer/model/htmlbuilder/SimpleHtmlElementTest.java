@@ -1,6 +1,7 @@
 package me.equiphract.markdownviewer.model.htmlbuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +33,18 @@ class SimpleHtmlElementTest {
     var actualElement = element.toString();
 
     assertEquals(expectedElement, actualElement);
+  }
+
+  @Test
+  void addAttribute_givenNullName_throwsNullPointerException() {
+    assertThrows(
+        IllegalArgumentException.class, () -> element.addAttribute(null, ""));
+  }
+
+  @Test
+  void addAttribute_givenNullValue_throwsNullPointerException() {
+    assertThrows(
+        IllegalArgumentException.class, () -> element.addAttribute("", null));
   }
 
 }
