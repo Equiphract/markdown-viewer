@@ -16,7 +16,10 @@
     </Menu>
   </MenuBar>
 
-  <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
+  <WebView
+    fx:id="webView"
+    VBox.vgrow="ALWAYS"
+    onScroll="#rememberScrollPosition"/>
 
 </VBox>
 
