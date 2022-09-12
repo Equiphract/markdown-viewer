@@ -36,15 +36,54 @@ class SimpleHtmlElementTest {
   }
 
   @Test
-  void addAttribute_givenNullName_throwsNullPointerException() {
+  void addAttribute_givenNullName_throwsIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class, () -> element.addAttribute(null, ""));
   }
 
   @Test
-  void addAttribute_givenNullValue_throwsNullPointerException() {
+  void addAttribute_givenNullValue_throwsIllegalArgumentException() {
     assertThrows(
         IllegalArgumentException.class, () -> element.addAttribute("", null));
+  }
+
+  @Test
+  void addChild_givenHtmlElement_addsHtmlElement() {
+    var expectedElement = "<a><img></img></a>";
+
+    element.addChild(new SimpleHtmlElement("img"));
+    var actualElement = element.toString();
+
+    assertEquals(expectedElement, actualElement);
+  }
+
+  @Test
+  void addChild_calledTwoTimes_addsTwoHtmlElements() {
+    var expectedElement = "<a><img></img><p></p></a>";
+
+    element.addChild(new SimpleHtmlElement("img"));
+    element.addChild(new SimpleHtmlElement("p"));
+    var actualElement = element.toString();
+
+    assertEquals(expectedElement, actualElement);
+  }
+
+  @Test
+  void addChild_calledInNestedManner_resultsInNestedHtmlElements() {
+    var expectedElement = "<a><p><img></img></p></a>";
+
+    HtmlElement pElement = new SimpleHtmlElement("p");
+    pElement.addChild(new SimpleHtmlElement("img"));
+    element.addChild(pElement);
+    var actualElement = element.toString();
+
+    assertEquals(expectedElement, actualElement);
+  }
+
+  @Test
+  void addChild_givenNullValue_throwsIllegalArgumentException() {
+    assertThrows(
+        IllegalArgumentException.class, () -> element.addChild(null));
   }
 
 }
