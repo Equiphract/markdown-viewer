@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 class SimpleHtmlElementTest {
-  SimpleHtmlElement element = new SimpleHtmlElement("a");
+
+  private SimpleHtmlElement element = new SimpleHtmlElement("a");
 
   @Test
   void toString_returnsCorrectStringRepresentationOfAnHtmlTag() {
