@@ -38,6 +38,8 @@ public final class MainViewModel {
   }
 
   private void updateHtml(String modifiedFileContent) {
+    // TODO this callback gets executed multiple times for a single file edit by
+    // the FileObserver for some reason...
     String convertedFileContent = converter.convert(modifiedFileContent);
     String constructedHtml = constructHtml(convertedFileContent);
     html.set(constructedHtml);
@@ -51,7 +53,6 @@ public final class MainViewModel {
   public void addAsyncHtmlPropertyListener(
       ChangeListener<? super String> listener) {
 
-    wrapListenerInRunLater(listener);
     html.addListener(wrapListenerInRunLater(listener));
   }
 
