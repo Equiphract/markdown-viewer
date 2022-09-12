@@ -61,8 +61,8 @@ class SimpleHtmlElementTest {
   void addChild_calledTwoTimes_addsTwoHtmlElements() {
     var expectedElement = "<a><img></img><p></p></a>";
 
-    element.addChild(new SimpleHtmlElement("img"));
-    element.addChild(new SimpleHtmlElement("p"));
+    element.addChild(new SimpleHtmlElement("img"))
+      .addChild(new SimpleHtmlElement("p"));
     var actualElement = element.toString();
 
     assertEquals(expectedElement, actualElement);
@@ -73,8 +73,8 @@ class SimpleHtmlElementTest {
     var expectedElement = "<a><p><img></img></p></a>";
 
     HtmlElement pElement = new SimpleHtmlElement("p");
-    pElement.addChild(new SimpleHtmlElement("img"));
-    element.addChild(pElement);
+    HtmlElement imgElement = new SimpleHtmlElement("img");
+    element.addChild(pElement.addChild(imgElement));
     var actualElement = element.toString();
 
     assertEquals(expectedElement, actualElement);

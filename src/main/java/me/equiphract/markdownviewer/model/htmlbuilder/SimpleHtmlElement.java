@@ -19,7 +19,7 @@ final class SimpleHtmlElement implements HtmlElement {
   }
 
   @Override
-  public void addAttribute(String name, String value)
+  public HtmlElement addAttribute(String name, String value)
       throws IllegalArgumentException {
 
     if (name == null || value == null) {
@@ -27,15 +27,21 @@ final class SimpleHtmlElement implements HtmlElement {
     }
 
     attributes.add(" %s=\"%s\"".formatted(name, value));
+
+    return this;
   }
 
   @Override
-  public void addChild(HtmlElement child) throws IllegalArgumentException {
+  public HtmlElement addChild(HtmlElement child)
+      throws IllegalArgumentException {
+
     if (child == null) {
       throw new IllegalArgumentException(NULL_ARGUMENT_EXCEPTION_MESSAGE);
     }
 
     children.add(child);
+
+    return this;
   }
 
   @Override
