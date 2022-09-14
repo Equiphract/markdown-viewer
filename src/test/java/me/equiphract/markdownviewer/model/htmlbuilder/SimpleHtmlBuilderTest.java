@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 
 class SimpleHtmlBuilderTest {
@@ -15,9 +16,8 @@ class SimpleHtmlBuilderTest {
   @Test
   void build_givenBaseUrlWithEndingSlash_returnsHtmlWithBaseUrlWithEndingSlash() {
     var baseUrl = "/path/to/somewhere/";
-    var bodyContent = "";
 
-    String constructedHtml = htmlBuilder.build(baseUrl, bodyContent);
+    String constructedHtml = htmlBuilder.build(baseUrl, "", "");
     Document document = Jsoup.parse(constructedHtml);
 
     String actualBaseUrl = document.select("head base").attr("href");
@@ -32,10 +32,9 @@ class SimpleHtmlBuilderTest {
   @Test
   void build_givenBaseUrlWithoutEndingSlash_returnsHtmlWithBaseUrlWithEndingSlash() {
     var baseUrl = "/path/to/somewhere";
-    var bodyContent = "";
     var expectedBaseUrl = baseUrl + "/";
 
-    String constructedHtml = htmlBuilder.build(baseUrl, bodyContent);
+    String constructedHtml = htmlBuilder.build(baseUrl, "", "");
     Document document = Jsoup.parse(constructedHtml);
 
     String actualBaseUrl = document.select("head base").attr("href");
@@ -51,9 +50,8 @@ class SimpleHtmlBuilderTest {
   void build_givenBaseUrl_returnsHtmlWithBaseUrlWithFileSchemePrefix() {
     var baseUrl = "/path/to/somewhere";
     var fileScheme = "file://";
-    var bodyContent = "";
 
-    String constructedHtml = htmlBuilder.build(baseUrl, bodyContent);
+    String constructedHtml = htmlBuilder.build(baseUrl, "", "");
     Document document = Jsoup.parse(constructedHtml);
 
     String actualBaseUrl = document.select("head base").attr("href");
@@ -66,11 +64,37 @@ class SimpleHtmlBuilderTest {
   }
 
   @Test
+  void build_givenStyle_returnsHtmlWithCorrectStyle() {
+    var style = """
+      p {
+        color: red;
+      }
+      """;
+
+    String expectedStyleElement = buildExpectedStyle(style);
+    String actualStyleElement = buildActualStyleElement(style);
+
+    assertEquals(expectedStyleElement, actualStyleElement);
+  }
+
+  private String buildExpectedStyle(String style) {
+    Document expectedDocument = Jsoup.parse("<html></html>");
+    expectedDocument.head().appendElement("style").appendText(style);
+    return expectedDocument.select("html head style").toString();
+  }
+
+  private String buildActualStyleElement(String style) {
+    String constructedHtml = htmlBuilder.build("", style, "");
+    return Jsoup.parse(constructedHtml).select("html head style").toString();
+  }
+
+  @Test
   void build_givenBodyContent_returnsHtmlWithCorrectBodyContent() {
     var baseUrl = "";
+    var style = "";
     var bodyContent = "<p>Do not panic, this is just a test!</p>";
 
-    String constructedHtml = htmlBuilder.build(baseUrl, bodyContent);
+    String constructedHtml = htmlBuilder.build(baseUrl, style, bodyContent);
     Document document = Jsoup.parse(constructedHtml);
 
     assertEquals(bodyContent, document.select("html body p").toString());
@@ -79,19 +103,20 @@ class SimpleHtmlBuilderTest {
   @Test
   void build_givenNullBaseUrl_throwsIllegalArgumentException() {
     assertThrows(
-        IllegalArgumentException.class, () -> htmlBuilder.build(null, ""));
+        IllegalArgumentException.class, () -> htmlBuilder.build(null, "", ""));
+  }
+
+  @Test
+  void build_givenNullStyle_throwsIllegalArgumentException() {
+    assertThrows(
+        IllegalArgumentException.class, () -> htmlBuilder.build("", null, ""));
   }
 
   @Test
   void build_givenNullBodyContent_throwsIllegalArgumentException() {
     assertThrows(
-        IllegalArgumentException.class, () -> htmlBuilder.build("", null));
+        IllegalArgumentException.class, () -> htmlBuilder.build("", "", null));
   }
-
-  // @Test
-  // void build_havingBuiltNoNewDocument_throwsHtmlBuildException() {
-  //   assertThrows(DocumentBuildException.class, () -> htmlBuilder.build());
-  // }
 
 }
 
