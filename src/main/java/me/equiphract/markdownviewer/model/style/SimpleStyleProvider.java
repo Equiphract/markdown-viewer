@@ -1,30 +1,33 @@
 package me.equiphract.markdownviewer.model.style;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.nio.file.Path;
+
+import me.equiphract.markdownviewer.model.io.FileContentReader;
 
 public final class SimpleStyleProvider implements StyleProvider {
 
-  public String getStyle(BufferedReader reader)
-      throws FileNotFoundException, IOException {
+  private String stylesDirectory;
+  private FileContentReader fileContentReader;
 
-    return readFile(reader);
+  public SimpleStyleProvider(
+      String stylesDirectory, FileContentReader fileContentReader) {
+
+    if (stylesDirectory == null || fileContentReader == null) {
+      throw new IllegalArgumentException("Null arguments are not allowed.");
+    }
+
+    this.stylesDirectory = stylesDirectory;
+    this.fileContentReader = fileContentReader;
   }
 
-  private String readFile(BufferedReader reader) throws IOException {
-    if (reader == null) {
-      throw new IllegalArgumentException("A null argument is not allowed.");
+  @Override
+  public String getStyle(String styleName) {
+    if (styleName == null) {
+      throw new IllegalArgumentException("The style name must not be null.");
     }
 
-    var stringBuilder = new StringBuilder(1000);
-
-    String line;
-    while ((line = reader.readLine()) != null) {
-      stringBuilder.append(line + "\n");
-    }
-
-    return stringBuilder.toString();
+    Path pathToFile = Path.of(stylesDirectory, styleName);
+    return fileContentReader.read(pathToFile);
   }
 
 }

@@ -6,14 +6,38 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Path;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import me.equiphract.markdownviewer.model.io.FileContentReader;
 
 class SimpleStyleProviderTest {
 
-  private SimpleStyleProvider provider = new SimpleStyleProvider();
+  private String stylesDirectory;
+  private FileContentReader fileContentReader;
+  private SimpleStyleProvider provider;
+
+  @BeforeEach
+  void setUp() {
+    stylesDirectory = "/path/to/somewhere/";
+    fileContentReader = mock(FileContentReader.class);
+    provider = new SimpleStyleProvider(stylesDirectory, fileContentReader);
+  }
+
+  @Test
+  void SimpleStyleProvider_givenNullStylesDirectory_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new SimpleStyleProvider(null, fileContentReader));
+  }
+
+  @Test
+  void SimpleStyleProvider_givenNullFileContentReader_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+        () -> new SimpleStyleProvider(stylesDirectory, null));
+  }
 
   @Test
   void getStyle_givenNull_throwsIllegalArgumentException() {
@@ -22,19 +46,15 @@ class SimpleStyleProviderTest {
 
   @Test
   void getStyle_givenExistingStyle_returnsStyle() throws IOException {
-    var firstLine = "p {";
-    var secondLine = "  color: red;";
-    var thirdLine = "}";
     var expectedStyle = """
-      %s
-      %s
-      %s
-      """.formatted(firstLine, secondLine, thirdLine);
+      p {
+        color: red;
+      }
+      """;
 
-    BufferedReader reader = mock(BufferedReader.class);
-    when(reader.readLine()).thenReturn(firstLine, secondLine, thirdLine, null);
+    when(fileContentReader.read(any(Path.class))).thenReturn(expectedStyle);
 
-    String actualStyle = provider.getStyle(reader);
+    String actualStyle = provider.getStyle("Red_Text");
 
     assertEquals(expectedStyle, actualStyle);
   }
