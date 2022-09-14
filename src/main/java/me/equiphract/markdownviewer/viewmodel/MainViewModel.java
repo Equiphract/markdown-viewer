@@ -47,7 +47,7 @@ public final class MainViewModel {
 
   private String constructHtml(String convertedFileContent) {
     String parentPath = currentlyObservedFilePath.getParent().toString();
-    return htmlBuilder.buildHtml(parentPath, convertedFileContent);
+    return htmlBuilder.build(parentPath, convertedFileContent);
   }
 
   public void addAsyncHtmlPropertyListener(

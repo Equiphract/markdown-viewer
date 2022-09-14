@@ -1,25 +1,25 @@
 package me.equiphract.markdownviewer.model.htmlbuilder;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 public final class SimpleHtmlBuilder implements HtmlBuilder {
 
-  private static final String HTML_SKELETON = """
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <base href="file://%s/">
-      </head>
-      <body>
-        %s
-      </body>
-    </html>
-    """;
+  private Document document;
+  private String baseUrl;
+  private String bodyContent;
 
   @Override
-  public String buildHtml(String baseUrl, String bodyContent) {
+  public String build(String baseUrl, String bodyContent) {
     throwIfArgumentsContainNull(baseUrl, bodyContent);
+    this.baseUrl = baseUrl;
+    this.bodyContent = bodyContent;
 
-    String sanitizedBaseUrl = sanitizeBaseUrl(baseUrl);
-    return HTML_SKELETON.formatted(sanitizedBaseUrl, bodyContent);
+    addEndingSlashToBaseUrlIfMissing();
+    buildDocument();
+
+    return document.toString();
   }
 
   private void throwIfArgumentsContainNull(String baseUrl, String bodyContent) {
@@ -28,12 +28,20 @@ public final class SimpleHtmlBuilder implements HtmlBuilder {
     }
   }
 
-  private String sanitizeBaseUrl(String baseUrl) {
-    if (baseUrl.endsWith("/")) {
-      return baseUrl.substring(0, baseUrl.length() - 1);
-    }
+  private void addEndingSlashToBaseUrlIfMissing() {
+    var slash = "/";
 
-    return baseUrl;
+    if (!baseUrl.endsWith(slash)) {
+      baseUrl += slash;
+    }
+  }
+
+  private void buildDocument() {
+    document = Jsoup.parse("<html></html>");
+    Element base = document.head().appendElement("base");
+    var fileScheme = "file://";
+    base.attr("href", fileScheme + baseUrl);
+    document.body().append(bodyContent);
   }
 
 }
