@@ -1,6 +1,8 @@
 package me.equiphract.markdownviewer.model.style;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import me.equiphract.markdownviewer.model.io.FileContentReader;
 
@@ -21,13 +23,33 @@ public final class SimpleStyleProvider implements StyleProvider {
   }
 
   @Override
-  public String getStyle(String styleName) {
+  public Optional<String> getStyle(String filename) {
+    validateFilename(filename);
+
+    var pathToFile = Path.of(stylesDirectory, filename);
+    var pathAsString = pathToFile.toString();
+
+    return tryToRead(pathAsString);
+  }
+
+  private void validateFilename(String styleName) {
     if (styleName == null) {
-      throw new IllegalArgumentException("The style name must not be null.");
+      throw new IllegalArgumentException("The filename must not be null.");
+    }
+  }
+
+  private Optional<String> tryToRead(String filePath) {
+    Optional<String> style = Optional.empty();
+
+    try {
+      String styleString = fileContentReader.read(filePath);
+      style = Optional.of(styleString);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.err.println(filePath + " could not be read from.");
     }
 
-    Path pathToFile = Path.of(stylesDirectory, styleName);
-    return fileContentReader.read(pathToFile);
+    return style;
   }
 
 }

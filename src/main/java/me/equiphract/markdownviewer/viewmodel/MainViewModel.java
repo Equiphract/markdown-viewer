@@ -12,20 +12,28 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import me.equiphract.markdownviewer.model.htmlbuilder.HtmlBuilder;
+import me.equiphract.markdownviewer.model.htmlbuilder.SimpleHtmlBuilder;
 import me.equiphract.markdownviewer.model.io.FileObserver;
 import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
-import me.equiphract.markdownviewer.model.htmlbuilder.HtmlBuilder;
-import me.equiphract.markdownviewer.model.htmlbuilder.SimpleHtmlBuilder;
+import me.equiphract.markdownviewer.model.style.SimpleStyleProvider;
+import me.equiphract.markdownviewer.model.style.StyleProvider;
+import me.equiphract.markdownviewer.viewmodel.io.SimpleFileContentReader;
+
 
 public final class MainViewModel {
+
+  private static final String STYLES_DIRECTORY = "/tmp/styles/";
+  private static final String DEFAULT_STYLE_FILENAME = "vanilla.css";
 
   private StringProperty html;
   private FileObserver fileObserver;
   private Path currentlyObservedFilePath;
   private MarkdownConverter converter;
   private HtmlBuilder htmlBuilder;
+  private StyleProvider styleProvider;
 
   public MainViewModel() throws IOException, InterruptedException {
     html = new SimpleStringProperty("");
@@ -33,6 +41,9 @@ public final class MainViewModel {
     fileObserver = new SingleFileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
     htmlBuilder = new SimpleHtmlBuilder();
+    var fileContentReader = new SimpleFileContentReader();
+    styleProvider =
+      new SimpleStyleProvider(STYLES_DIRECTORY, fileContentReader);
 
     fileObserver.subscribe(this, this::updateHtml);
   }
@@ -47,7 +58,8 @@ public final class MainViewModel {
 
   private String constructHtml(String convertedFileContent) {
     String parentPath = currentlyObservedFilePath.getParent().toString();
-    return htmlBuilder.build(parentPath, convertedFileContent);
+    String style = styleProvider.getStyle(DEFAULT_STYLE_FILENAME).orElse("");
+    return htmlBuilder.build(parentPath, style, convertedFileContent);
   }
 
   public void addAsyncHtmlPropertyListener(

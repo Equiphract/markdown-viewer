@@ -2,12 +2,11 @@ package me.equiphract.markdownviewer.model.style;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,9 +51,10 @@ class SimpleStyleProviderTest {
       }
       """;
 
-    when(fileContentReader.read(any(Path.class))).thenReturn(expectedStyle);
+    when(fileContentReader.read(anyString()))
+      .thenReturn(expectedStyle);
 
-    String actualStyle = provider.getStyle("Red_Text");
+    String actualStyle = provider.getStyle("Red_Text").orElseThrow();
 
     assertEquals(expectedStyle, actualStyle);
   }

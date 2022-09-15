@@ -1,8 +1,10 @@
 package me.equiphract.markdownviewer.model.style;
 
+import java.util.Optional;
+
 public interface StyleProvider {
 
-  String getStyle(String styleName);
+  Optional<String> getStyle(String filename);
 
 }
 

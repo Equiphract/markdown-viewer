@@ -1,10 +1,11 @@
 package me.equiphract.markdownviewer.model.io;
 
-import java.nio.file.Path;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public interface FileContentReader {
 
-  String read(Path path);
+  String read(String filePath) throws FileNotFoundException, IOException;
 
 }
 
