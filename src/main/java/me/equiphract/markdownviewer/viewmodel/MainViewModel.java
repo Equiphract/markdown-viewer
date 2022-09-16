@@ -12,15 +12,15 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import me.equiphract.markdownviewer.io.SimpleFileContentReader;
+import me.equiphract.markdownviewer.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.htmlbuilder.HtmlBuilder;
 import me.equiphract.markdownviewer.model.htmlbuilder.SimpleHtmlBuilder;
 import me.equiphract.markdownviewer.model.io.FileObserver;
-import me.equiphract.markdownviewer.model.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.markdown.MarkdownConverter;
 import me.equiphract.markdownviewer.model.markdown.MarkdownToHtmlConverter;
 import me.equiphract.markdownviewer.model.style.SimpleStyleProvider;
 import me.equiphract.markdownviewer.model.style.StyleProvider;
-import me.equiphract.markdownviewer.viewmodel.io.SimpleFileContentReader;
 
 
 public final class MainViewModel {

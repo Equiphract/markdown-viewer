@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.model.io;
+package me.equiphract.markdownviewer.io;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import me.equiphract.markdownviewer.model.io.FileObserver;
 import me.equiphract.markdownviewer.model.util.ChangeNotifier;
 import me.equiphract.markdownviewer.model.util.TextChangeNotifier;
 

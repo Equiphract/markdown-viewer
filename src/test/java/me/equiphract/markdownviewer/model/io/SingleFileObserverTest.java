@@ -20,6 +20,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import me.equiphract.markdownviewer.io.SingleFileObserver;
+
 class SingleFileObserverTest {
 
   private static final String INITIAL_DATA = "Initial Data";

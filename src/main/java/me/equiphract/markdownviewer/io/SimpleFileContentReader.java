@@ -1,4 +1,4 @@
-package me.equiphract.markdownviewer.viewmodel.io;
+package me.equiphract.markdownviewer.io;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
