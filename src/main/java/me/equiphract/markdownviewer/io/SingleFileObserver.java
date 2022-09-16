@@ -144,6 +144,11 @@ public final class SingleFileObserver implements FileObserver {
   }
 
   @Override
+  public Path getObservedPath() {
+    return file;
+  }
+
+  @Override
   public void subscribe(Object subscriber, Consumer<String> callback) {
     changeNotifier.subscribe(subscriber, callback);
   }
