@@ -8,7 +8,7 @@ import me.equiphract.markdownviewer.model.io.FileContentReader;
 
 public final class SimpleStyleProvider implements StyleProvider {
 
-  private String stylesDirectory;
+  private Path stylesDirectoryPath;
   private FileContentReader fileContentReader;
 
   public SimpleStyleProvider(
@@ -18,7 +18,7 @@ public final class SimpleStyleProvider implements StyleProvider {
       throw new IllegalArgumentException("Null arguments are not allowed.");
     }
 
-    this.stylesDirectory = stylesDirectory;
+    this.stylesDirectoryPath = Path.of(stylesDirectory);
     this.fileContentReader = fileContentReader;
   }
 
@@ -26,7 +26,7 @@ public final class SimpleStyleProvider implements StyleProvider {
   public Optional<String> getStyle(String filename) {
     validateFilename(filename);
 
-    var pathToFile = Path.of(stylesDirectory, filename);
+    var pathToFile = stylesDirectoryPath.resolve(filename);
     var pathAsString = pathToFile.toString();
 
     return tryToRead(pathAsString);
