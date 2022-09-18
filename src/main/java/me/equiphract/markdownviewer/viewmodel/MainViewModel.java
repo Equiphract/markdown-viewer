@@ -7,11 +7,19 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchService;
+import java.util.LinkedList;
+import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import me.equiphract.markdownviewer.io.SimpleFileContentReader;
 import me.equiphract.markdownviewer.io.SingleFileObserver;
 import me.equiphract.markdownviewer.model.htmlbuilder.HtmlBuilder;
@@ -25,40 +33,107 @@ import me.equiphract.markdownviewer.model.style.StyleProvider;
 
 public final class MainViewModel {
 
-  private static final String STYLES_DIRECTORY = "/tmp/styles/";
-  private static final String DEFAULT_STYLE_FILENAME = "vanilla.css";
-
   private StringProperty html;
+  private StringProperty stylesDirectory;
+  private StringProperty currentlyUsedStyleFilename;
+  private ListProperty<String> styleFilenames;
   private FileObserver fileObserver;
   private Path currentlyObservedFilePath;
   private MarkdownConverter converter;
   private HtmlBuilder htmlBuilder;
   private StyleProvider styleProvider;
+  private String convertedFileContent;
 
   public MainViewModel() throws IOException, InterruptedException {
-    html = new SimpleStringProperty("");
+    html = new SimpleStringProperty();
+    stylesDirectory = new SimpleStringProperty();
+    currentlyUsedStyleFilename = new SimpleStringProperty();
+    styleFilenames = new SimpleListProperty<String>(
+        FXCollections.observableList(new LinkedList<String>()));
     WatchService watchService = FileSystems.getDefault().newWatchService();
     fileObserver = new SingleFileObserver(watchService);
     converter = new MarkdownToHtmlConverter();
     htmlBuilder = new SimpleHtmlBuilder();
-    var fileContentReader = new SimpleFileContentReader();
-    styleProvider =
-      new SimpleStyleProvider(STYLES_DIRECTORY, fileContentReader);
 
+    addStylesDirectoryListeners();
+    addCurrentlyUsedStyleFilenameListener();
+    subscribeToFileObserver();
+  }
+
+  private void addStylesDirectoryListeners() {
+    stylesDirectory.addListener(this::buildNewStyleProvider);
+    stylesDirectory.addListener(this::updateStyleFilenames);
+  }
+
+  private void buildNewStyleProvider(
+      ObservableValue<? extends String> stylesDirectoryProperty,
+      String oldStylesDirectory,
+      String newStylesDirectory) {
+
+    styleProvider = new SimpleStyleProvider(
+        newStylesDirectory, new SimpleFileContentReader());
+  }
+
+  private void updateStyleFilenames(
+      ObservableValue<? extends String> stylesDirectoryProperty,
+      String oldStylesDirectory,
+      String newStylesDirectory) {
+
+    List<String> filenames = getStyleFilenamesInDirectory(newStylesDirectory);
+    styleFilenames.addAll(filenames);
+  }
+
+  private List<String> getStyleFilenamesInDirectory(String directoryPath) {
+    var stylesDirectoryPath = Path.of(directoryPath);
+    List<String> filenames = new LinkedList<>();
+
+    try (var directoryStream = Files.newDirectoryStream(stylesDirectoryPath)) {
+
+      directoryStream.forEach(entry -> {
+        var filename = entry.getFileName().toString();
+        if (filename.endsWith(".css")) {
+          filenames.add(filename);
+        }
+      });
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return filenames;
+  }
+
+  private void addCurrentlyUsedStyleFilenameListener() {
+    currentlyUsedStyleFilename.addListener(
+        (observable, oldStyleFilename, newStyleFilename) -> renderHtml());
+  }
+
+  private void renderHtml() {
+    String constructedHtml = constructHtml(convertedFileContent);
+    html.set(constructedHtml);
+  }
+
+  private void subscribeToFileObserver() {
     fileObserver.subscribe(this, this::updateHtml);
   }
 
   private void updateHtml(String modifiedFileContent) {
     // TODO this callback gets executed multiple times for a single file edit by
     // the FileObserver for some reason...
-    String convertedFileContent = converter.convert(modifiedFileContent);
-    String constructedHtml = constructHtml(convertedFileContent);
-    html.set(constructedHtml);
+    convertedFileContent = converter.convert(modifiedFileContent);
+    renderHtml();
   }
 
   private String constructHtml(String convertedFileContent) {
     String parentPath = currentlyObservedFilePath.getParent().toString();
-    String style = styleProvider.getStyle(DEFAULT_STYLE_FILENAME).orElse("");
+
+    var styleFilename = this.currentlyUsedStyleFilename.getValueSafe();
+    var style = "";
+
+    if (!styleFilename.isEmpty()) {
+      style = styleProvider.getStyle(styleFilename).orElse("");
+    }
+
     return htmlBuilder.build(parentPath, style, convertedFileContent);
   }
 
@@ -74,6 +149,24 @@ public final class MainViewModel {
     return (observable, oldValue, newValue) -> {
       Platform.runLater(() -> listener.changed(observable, oldValue, newValue));
     };
+  }
+
+  public void addStyleFilenamesPropertyListener(
+      ListChangeListener<? super String> listener) {
+
+    styleFilenames.addListener(listener);
+  }
+
+  public void bindBidirectionalToStylesDirectoryProperty(
+      Property<String> other) {
+
+    stylesDirectory.bindBidirectional(other);
+  }
+
+  public void bindUnidirectionalToCurrentlyUsedStyleFilenameProperty(
+      StringProperty other) {
+
+    this.currentlyUsedStyleFilename.bind(other);
   }
 
   public void loadFile(File file)
