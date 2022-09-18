@@ -1,6 +1,7 @@
 package me.equiphract.markdownviewer;
 
 import java.io.IOException;
+import java.nio.file.Files;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -15,14 +16,21 @@ public final class MarkdownViewerApplication extends Application {
 
   @Override
   public void start(Stage primaryStage) throws IOException {
+    createApplicationStyleDirectoryIfNecessary();
     configurePrimaryStage(primaryStage);
     primaryStage.show();
+  }
+
+  private void createApplicationStyleDirectoryIfNecessary() throws IOException {
+    Files.createDirectories(GlobalConfiguration.STYLES_DIRECTORY);
   }
 
   private void configurePrimaryStage(Stage primaryStage) throws IOException {
     primaryStage.setScene(sceneFactory.createMainScene());
     primaryStage.setTitle("Markdown-Viewer");
   }
+
+
 
 }
 

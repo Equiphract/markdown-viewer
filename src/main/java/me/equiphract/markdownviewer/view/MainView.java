@@ -3,6 +3,7 @@ package me.equiphract.markdownviewer.view;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,6 +18,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import me.equiphract.markdownviewer.GlobalConfiguration;
 import me.equiphract.markdownviewer.viewmodel.MainViewModel;
 
 public final class MainView {
@@ -103,7 +105,7 @@ public final class MainView {
 
   private void bindAndSetStylesDirectoryProperty() {
     mainViewModel.bindBidirectionalToStylesDirectoryProperty(stylesDirectory);
-    stylesDirectory.set("/tmp/styles/");
+    stylesDirectory.set(GlobalConfiguration.STYLES_DIRECTORY.toString());
   }
 
   private void bindStyleFilenameProperty() {
