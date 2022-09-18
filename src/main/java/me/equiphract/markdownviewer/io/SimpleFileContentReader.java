@@ -1,10 +1,9 @@
 package me.equiphract.markdownviewer.io;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
 import me.equiphract.markdownviewer.model.io.FileContentReader;
 
 public class SimpleFileContentReader implements FileContentReader {
@@ -13,18 +12,7 @@ public class SimpleFileContentReader implements FileContentReader {
   public String read(String filePath)
       throws FileNotFoundException, IOException {
 
-    var stringBuilder = new StringBuilder(1000);
-
-    try (var bufferedReader = new BufferedReader(new FileReader(filePath))) {
-      String line;
-
-      while ((line = bufferedReader.readLine()) != null) {
-        stringBuilder.append(line);
-        stringBuilder.append("\n");
-      }
-    }
-
-    return stringBuilder.toString();
+    return Files.readString(Path.of(filePath));
   }
 
 }
